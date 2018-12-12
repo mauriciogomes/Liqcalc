@@ -1,0 +1,9 @@
+{
+    "2018":[
+        {"valorInicial": 0, "valorFinal": 1903.98, "aliquota": 0},
+        {"valorInicial": 1903.99, "valorFinal": 2826.65, "aliquota": 7.5, "deduzir": 142.80},
+        {"valorInicial": 2826.66, "valorFinal": 3751.05, "aliquota": 15, "deduzir": 354.80},
+        {"valorInicial": 3751.06, "valorFinal": 4664.68, "aliquota": 22.5, "deduzir": 636.13},
+        {"valorInicial": 4664.69, "valorFinal": -1, "aliquota": 27.5, "deduzir": 869.36}
+    ]
+}
