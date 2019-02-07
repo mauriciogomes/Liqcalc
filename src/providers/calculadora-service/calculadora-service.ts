@@ -26,11 +26,12 @@ export class CalculadoraServiceProvider {
 			console.error(msgErro);
 			throw new Error(msgErro);
 		}		
-		const aliquotaINSS = objAliquota.INSS;		
-		const tetoINSS = 5645.80 * 0.11;
-		let valorINSS = salarioBruto * aliquotaINSS / 100;
-		if(valorINSS > tetoINSS){
-			valorINSS = tetoINSS;
+		const aliquotaINSS = objAliquota.INSS;
+		let valorINSS;
+		if(objAliquota.tetoINSS && salarioBruto > objAliquota.tetoINSS){
+			valorINSS = objAliquota.tetoINSS * aliquotaINSS / 100;			
+		}else{
+			valorINSS = salarioBruto * aliquotaINSS / 100;
 		}
 
 		const salarioBaseParaIR = salarioBruto - valorINSS;

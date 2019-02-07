@@ -3,5 +3,10 @@
         {"valorInicial": 0, "valorFinal": 1693.72, "aliquota": 8},
         {"valorInicial": 1693.73, "valorFinal": 2822.90, "aliquota": 9},
         {"valorInicial": 2822.91, "valorFinal": 5645.80, "aliquota": 11}
+    ],
+    "2019":[
+        {"valorInicial": 0, "valorFinal": 1751.81, "aliquota": 8},
+        {"valorInicial": 1751.82, "valorFinal": 2919.72, "aliquota": 9},
+        {"valorInicial": 2919.73, "valorFinal": 5839.45, "aliquota": 11}
     ]
 }

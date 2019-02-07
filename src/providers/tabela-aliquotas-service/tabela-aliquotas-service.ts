@@ -70,10 +70,16 @@ export class TabelaAliquotasServiceProvider {
 			throw new Error("Aliquotas de INSS não foram carregadas.");
 		}
 
-		this.aliquotasINSS.forEach((faixa:any)=>{
+		this.aliquotasINSS.forEach((faixa:any, indice, arrAliquotas)=>{
 			console.log(`linha ${faixa}`);
 			if(salarioBruto >= faixa.valorInicial && salarioBruto <= faixa.valorFinal){
 				aliquota['INSS'] = faixa.aliquota;
+				return;
+			}else if( indice === arrAliquotas.length - 1 ){
+				// foi necessário saber se é a ultima faixa de valores já que o valor final (teto)
+				// não indica que o salário não cai na regra
+				aliquota['INSS'] = faixa.aliquota;
+				aliquota['tetoINSS'] = faixa.valorFinal;
 			}
 		});
 
@@ -91,12 +97,10 @@ export class TabelaAliquotasServiceProvider {
 		}
 
 		this.aliquotasIR.forEach((faixa:any)=>{
-			console.log(`linha ${faixa}`);
 			if(salarioBase >= faixa.valorInicial 
 					&& (salarioBase <= faixa.valorFinal || faixa.valorFinal == -1) ){
-				
-				aliquota['IR'] = faixa.aliquota;
-				aliquota['deducaoIR'] = faixa.deducaoIR;
+				aliquota['IR'] = faixa.aliquota ? faixa.aliquota : 0;
+				aliquota['deducaoIR'] = faixa.deduzir ? faixa.deduzir : 0;
 			}
 		});
 		
@@ -128,6 +132,7 @@ export class TabelaAliquotasServiceProvider {
 				(response: Response) => {
 					console.log("carregaTabelaIR() -> Meu response : ");
 					console.log(response);
+					//TODO pegar a tabela do ano corrente ou anterior (ex. previne caso haja tabela futura)
 					this.aliquotasIR = response['2018'];
 					resolve(true);
 				},
