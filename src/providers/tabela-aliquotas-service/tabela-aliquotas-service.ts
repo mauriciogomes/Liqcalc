@@ -61,6 +61,55 @@ export class TabelaAliquotasServiceProvider {
 		
 	}
 
+	/**
+	 * Requisita a tabela de alíquotas e a torna acessível à aplicação
+	 */
+	private carregaTabelaINSS(): Promise<boolean>{
+		return new Promise((resolve)=>{
+			this.http.get(this._urlAssets + 'tabela-inss.json')
+			.subscribe( (response: Response) => {
+					this.aliquotasINSS = this.extraiDadosVigentes(response);
+					resolve(true);
+				},
+				this.trataErro
+			);
+		});
+		
+	}
+
+	private carregaTabelaIR(): Promise<boolean>{
+		return new Promise((resolve)=>{
+			this.http.get(this._urlAssets + 'tabela-ir.json')
+			.subscribe( 
+				(response: Response) => {
+					this.aliquotasIR = this.extraiDadosVigentes(response);
+					resolve(true);
+				},
+				this.trataErro
+			);
+		});
+	}
+
+	private extraiDadosVigentes(aliquotas){
+		// Pega a tabela do ano corrente ou anterior previnindo caso haja tabela
+		// previamente definida mas não vigente
+		const hoje = new Date();
+		let ano = hoje.getFullYear();
+		let aliquotasVigentes;
+		do{
+			aliquotasVigentes = aliquotas[ano];
+			console.log(`ano: ${ano}`);
+			console.log(JSON.stringify(aliquotasVigentes));
+			ano--;
+		}while(!aliquotasVigentes);
+		
+		return aliquotasVigentes;
+	}
+
+	private trataErro(erro: Response){
+		console.error( erro );
+		Promise.reject("Carregamento de tabela de aliquota. " + erro.json());
+	}
 
 	public selecionarAliquotaINSS(salarioBruto){
 		const aliquota = {'INSS': 0};
@@ -105,45 +154,6 @@ export class TabelaAliquotasServiceProvider {
 		});
 		
 		return aliquota;
-	}
-
-	/**
-	 * A função seleciona a tabela do ano apropriado e a torna acessível à aplicação
-	 */
-	private carregaTabelaINSS(): Promise<boolean>{
-		return new Promise((resolve)=>{
-			this.http.get(this._urlAssets + 'tabela-inss.json')
-			.subscribe( (response: Response) => {
-					console.log("carregaTabelaINSS() -> Meu response : ");
-					console.log(response);
-					this.aliquotasINSS = response['2018'];
-					resolve(true);
-				},
-				this.trataErro
-			);
-		});
-		
-	}
-
-	private carregaTabelaIR(): Promise<boolean>{
-		return new Promise((resolve)=>{
-			this.http.get(this._urlAssets + 'tabela-ir.json')
-			.subscribe( 
-				(response: Response) => {
-					console.log("carregaTabelaIR() -> Meu response : ");
-					console.log(response);
-					//TODO pegar a tabela do ano corrente ou anterior (ex. previne caso haja tabela futura)
-					this.aliquotasIR = response['2018'];
-					resolve(true);
-				},
-				this.trataErro
-			);
-		});
-	}
-
-	private trataErro(erro: Response){
-		console.error( erro );
-		Promise.reject("Carregamento de tabela de aliquota. " + erro.json());
 	}
 
 }
